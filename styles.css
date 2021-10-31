@@ -1,0 +1,53 @@
+body {
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 20px;
+}
+
+h3 {
+    margin-bottom: 20px;
+}
+
+.checkbox-label {
+    margin-right: 40px;
+}
+
+
+#column-1 {
+    float: left;
+}
+
+#column-2 {
+    float: left;
+    padding-top: 60px;
+    padding-left: 30px;
+
+}
+
+#city-field {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+#search-button {
+    margin-top: 10px;
+}
+
+#map-legend {
+    margin-top: 10px;
+}
+
+td {
+    padding: 5px;
+}
+
+#breweries-map {
+    width: 1300px;
+    height: 700px;
+    border: 1px black solid;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
