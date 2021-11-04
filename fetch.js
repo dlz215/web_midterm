@@ -196,6 +196,7 @@ function getBreweryData(url, searchScope) {
         })
         // Catch any errors from API call, converting to JSON, or adding map markers
         .catch(err => {
+            console.log(err)  // helpful for developer
             alert("Error retrieving data. Please try again.")
         })
 
@@ -203,14 +204,40 @@ function getBreweryData(url, searchScope) {
 
 // Function to add markers to map for all search types other than a state, city, and brewery type search
 function addMarkersToMap() {
+    createMarkers(breweriesToDisplayOnMap)   // display all types 
+}
 
-    breweriesToDisplayOnMap.forEach((brewery) => {
+// Function to add markers to map for a state, city, and brewery type search
+function addMarkersToMapCityAndTypeSearch() {
+
+    // Loop through result set for each brewery type selected by user
+    breweryTypesToSearch.forEach((breweryType) => {
+        createMarkers(breweriesToDisplayOnMap, breweryType)
+    })
+
+}
+
+
+
+function createMarkers(breweries, breweryType) {  // if a type is provided, display only that type. Otherwise, display all micro, regional, and brewpub
+
+    // create array of types that should be displayed
+    let breweryTypes
+
+    if (breweryType) {
+        breweryTypes = [ breweryType ]  // just the type indicated
+    } else {
+        breweryTypes = [ 'micro', 'regional', 'brewpub' ]  // all 
+    }
+
+    breweries.forEach((brewery) => {
 
         /* Check each brewery in result set. Filter out breweries without latitude and longitude data and breweries of
         types that will not be relevant to the user. */
-        if ( brewery.latitude != null && brewery.longitude != null &&
-            (brewery.brewery_type == 'micro' || brewery.brewery_type == 'regional' || brewery.brewery_type == 'brewpub') ) {
-
+        // brewery has lat, long and it's type is one of the types in the breweryTypes array 
+        if ( brewery.latitude != null && brewery.longitude != null && breweryTypes.includes(brewery.brewery_type) ) {
+            
+    
             // If brewery data includes a website URL, display link in map marker pop up
             if (brewery.website_url != null) {
                 markerText = `${brewery.name}<br>${brewery.city}, ${brewery.state}<br><a id="hyperlink" href="${brewery.website_url}">Website</a>`
@@ -234,59 +261,6 @@ function addMarkersToMap() {
                 let marker = L.marker(coordinates, {icon: brewpubIcon}).bindPopup(markerText).addTo(map)
                 mapMarkers.push(marker)
             }
-
         }
     })
-
-    }
-
-// Function to add markers to map for a state, city, and brewery type search
-function addMarkersToMapCityAndTypeSearch() {
-
-    // Loop through result set for each brewery type selected by user
-    breweryTypesToSearch.forEach((breweryType) => {
-
-
-        breweriesToDisplayOnMap.forEach((brewery) => {
-
-            // Display only breweries with matching type
-            if (brewery.latitude != null && brewery.longitude != null && brewery.brewery_type == breweryType) {
-
-                if (brewery.website_url != null) {
-                    markerText = `${brewery.name}<br>${brewery.city}, ${brewery.state}<br><a id="hyperlink" href="${brewery.website_url}">Website</a>`
-                } else {
-                    markerText = `${brewery.name}<br>${brewery.city}, ${brewery.state}`
-                }
-
-                let coordinates = []
-                coordinates.push(brewery.latitude)
-                coordinates.push(brewery.longitude)
-
-                if (brewery.brewery_type == 'micro') {
-                    let marker = L.marker(coordinates, {icon: microIcon}).bindPopup(markerText).addTo(map)
-                    mapMarkers.push(marker)
-                } else if (brewery.brewery_type == 'regional') {
-                    let marker = L.marker(coordinates, {icon: regionalIcon}).bindPopup(markerText).addTo(map)
-                    mapMarkers.push(marker)
-                } else if (brewery.brewery_type == 'brewpub') {
-                    let marker = L.marker(coordinates, {icon: brewpubIcon}).bindPopup(markerText).addTo(map)
-                    mapMarkers.push(marker)
-                }
-            }
-        })
-    })
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
